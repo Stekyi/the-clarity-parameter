@@ -5,7 +5,23 @@ import time
 
 st.set_page_config(layout='wide')
 st.title('Your Clarity App')
-st.subheader('This app, the clarity app, is to assist people generate ideas for business') 
+
+topContainer = st.container()
+
+with topContainer:
+    topcol1, topcol2 = st.columns(2)
+    with topcol1:
+        st.markdown('***This app, the clarity app, is to assist in fishing or RCA***') 
+        st.write('''The app uses the 5 whys, requires you to ask a general question, followup with 
+                4 additional questions by thinking through the responses.
+                ''')
+    with topcol2:
+        image_path = os.path.join("static", "idea_machine.jpg")
+        if os.path.exists(image_path):
+            st.image(image_path, width=350)
+        else:
+            st.warning("Image not found. Please check the image path.")
+
 st.divider()
 
 
@@ -28,33 +44,24 @@ with container2:
 with container1:
     col_left, col_center = st.columns(2)
 
-
     with col_left:
-        st.subheader(f'Answer(s) on {len(clarity.dict_of_whys)} ')                     
+        st.write(f'Answer(s) on {len(clarity.dict_of_whys)} ')                     
         
         for key in clarity.dict_of_whys:
-            st.subheader(key)
+            st.markdown(f' * {key} :')
             st.write(clarity.dict_of_whys[key])
     
-    
-        
+            
     with col_center:
-        image_path = os.path.join("static", "idea_machine.jpg")
-        if os.path.exists(image_path):
-            st.image(image_path)
-        else:
-            st.warning("Image not found. Please check the image path.")
-
+       
         form_values = {
             'question': None,
             }
         
         left_placeholder = st.empty()
         
-        st.divider()
-
         
-        updateCount = st.checkbox(label='Update Count')
+        updateCount = st.checkbox(label='Click before every ask')
                         
         form_container = st.container()
 
@@ -68,7 +75,7 @@ with container1:
                 
                     if len(clarity.dict_of_whys) != 5:
 
-                            form_values['question'] = st.text_input('Enter your  Question:  ')
+                            form_values['question'] = st.text_area('Enter your  Question:  ')
                             #print(form_values['question'])
                             submission = st.form_submit_button(label='Submit Question')
                             
@@ -88,12 +95,13 @@ with container1:
                             
                                     
                     else:
-                        st.subheader('All 5 questions sent and answered')
+                        st.markdown('***All 5 questions sent and answered***')
                         summary = st.form_submit_button(label='Generate a summary')
                         reset = st.form_submit_button(label='Start a new Session')
                         if summary:
-                            problem = clarity.getSummary()
-                            summary_placeholder.write(problem)
+                            with st.spinner('Generating summary.. scroll down to see when ready'):
+                                problem = clarity.getSummary()
+                                summary_placeholder.write(problem)
                         if reset:
                             clarity.dict_of_whys = {}
                             summary_placeholder.write('')
