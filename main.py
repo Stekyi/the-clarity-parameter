@@ -39,7 +39,11 @@ with container1:
     
         
     with col_center:
-        st.image(os.path.join(os.getcwd(), "static","idea_machine.jpg")) 
+        image_path = os.path.join("static", "idea_machine.jpg")
+        if os.path.exists(image_path):
+            st.image(image_path)
+        else:
+            st.warning("Image not found. Please check the image path.")
 
         form_values = {
             'question': None,
